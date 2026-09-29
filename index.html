@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17141f" />
+    <meta name="description" content="Seven Stones — a high-stakes color guessing game with lifetime scoring and achievements." />
+    <title>Seven Stones — The Bag Remembers</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Seven Stones home">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="stone stone-orange"></span>
+            <span class="stone stone-blue"></span>
+            <span class="stone stone-green"></span>
+            <span class="stone stone-purple"></span>
+          </span>
+          <span>
+            <span class="brand-name">Seven Stones</span>
+            <span class="brand-tagline">the bag remembers</span>
+          </span>
+        </a>
+
+        <div class="header-actions">
+          <label class="player-label" for="player-name">Player</label>
+          <input id="player-name" class="player-input" type="text" maxlength="24" value="Player" autocomplete="nickname" />
+          <button id="reset-save" class="quiet-button" type="button">Reset save</button>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="intro-row">
+          <div>
+            <p class="eyebrow">A game of nerve, probability, and one very rare stone</p>
+            <h1>Choose your color.<br /><em>Trust nothing.</em></h1>
+          </div>
+          <div class="intro-copy">
+            <p>Seven purple stones. Ten turns. Fifteen stones in the bag. Every round starts clean, but your lifetime score never forgets.</p>
+            <button id="scroll-achievements" class="text-button" type="button">View your achievement wall <span aria-hidden="true">↗</span></button>
+          </div>
+        </section>
+
+        <section class="dashboard-grid" aria-label="Seven Stones game dashboard">
+          <div class="main-column">
+            <div class="play-grid">
+              <section class="card game-card" aria-labelledby="round-heading">
+                <div class="card-topline">
+                  <div>
+                    <p class="eyebrow" id="round-label">THE NEXT ROUND</p>
+                    <h2 id="round-heading">The bag is waiting.</h2>
+                  </div>
+                  <div class="round-pill" id="round-pill">ROUND 01</div>
+                </div>
+
+                <div class="purple-bank" aria-live="polite">
+                  <div class="bank-glow" aria-hidden="true"></div>
+                  <div class="purple-count-wrap">
+                    <span class="purple-count" id="purple-count">7</span>
+                    <span class="purple-label">purple stones</span>
+                  </div>
+                  <div class="mini-stones" id="mini-stones" aria-hidden="true"></div>
+                </div>
+
+                <div class="turn-row">
+                  <div>
+                    <span class="metric-label">Turns</span>
+                    <strong id="turn-count">0 / 10</strong>
+                  </div>
+                  <div class="turn-track" aria-label="Turn progress">
+                    <span id="turn-progress"></span>
+                  </div>
+                  <div class="turn-status" id="turn-status">Ready when you are.</div>
+                </div>
+
+                <div class="bag-row">
+                  <div class="bag-visual" aria-hidden="true">
+                    <div class="bag-graphic" id="bag-graphic">
+                      <span class="bag-drawstring"></span>
+                      <span class="bag-knot"></span>
+                      <span class="bag-body"></span>
+                      <span class="bag-drawn-stone" id="bag-drawn-stone"></span>
+                    </div>
+                    <span class="bag-visual-label">live draw</span>
+                  </div>
+                  <div class="bag-inventory">
+                    <div class="metric-label">Stones remaining in the bag</div>
+                    <div class="bag-chips" id="bag-chips"></div>
+                  </div>
+                </div>
+
+                <div class="empty-round" id="empty-round">
+                  <div class="empty-icon" aria-hidden="true">✦</div>
+                  <h3>Start a round</h3>
+                  <p>Every round begins with seven purple stones and a fresh bag. Bonuses from your achievement wall can change the opening hand.</p>
+                  <button id="start-round" class="primary-button" type="button">Begin round <span aria-hidden="true">→</span></button>
+                </div>
+              </section>
+
+              <section class="card betting-card" id="betting-card" aria-labelledby="betting-heading">
+                <div class="card-topline compact">
+                  <div>
+                    <p class="eyebrow">MAKE YOUR MOVE</p>
+                    <h2 id="betting-heading">Place a bid</h2>
+                  </div>
+                  <div class="potential-win" id="potential-win">Choose a color</div>
+                </div>
+
+                <div class="color-picker" role="group" aria-label="Choose a color">
+                  <button class="color-button selected" type="button" data-color="orange">
+                    <span class="color-orb orange-orb" aria-hidden="true"></span>
+                    <span class="color-button-copy"><strong>Orange</strong><small>2× payout</small></span>
+                    <span class="color-probability" id="orange-probability">46.7%</span>
+                  </button>
+                  <button class="color-button" type="button" data-color="blue">
+                    <span class="color-orb blue-orb" aria-hidden="true"></span>
+                    <span class="color-button-copy"><strong>Blue</strong><small>2× payout</small></span>
+                    <span class="color-probability" id="blue-probability">46.7%</span>
+                  </button>
+                  <button class="color-button" type="button" data-color="green">
+                    <span class="color-orb green-orb" aria-hidden="true"></span>
+                    <span class="color-button-copy"><strong>Green</strong><small>15× payout</small></span>
+                    <span class="color-probability" id="green-probability">6.7%</span>
+                  </button>
+                </div>
+
+                <div class="bid-controls">
+                  <div class="bid-heading">
+                    <label for="bid-range">Your bid</label>
+                    <output id="bid-output" for="bid-range">1 purple</output>
+                  </div>
+                  <input id="bid-range" type="range" min="1" max="7" value="1" step="1" />
+                  <div class="bid-footer">
+                    <span>1</span>
+                    <span id="bid-max-label">7 all in</span>
+                  </div>
+                </div>
+
+                <div class="ev-row">
+                  <div class="ev-copy">
+                    <span class="metric-label">Expected payout</span>
+                    <strong id="expected-value">0.93× per purple</strong>
+                  </div>
+                  <div class="ev-meter"><span id="ev-meter-fill"></span></div>
+                  <div class="ev-note" id="ev-note">The odds are almost honest.</div>
+                </div>
+
+                <button id="place-bet" class="place-button" type="button" disabled>
+                  <span>Place bid</span>
+                  <span class="place-button-meta" id="place-button-meta">1 purple on orange</span>
+                </button>
+                <p class="fine-print">The stone is drawn after you commit. A correct orange or blue bid returns 2× your bid; green returns 15×.</p>
+              </section>
+            </div>
+
+            <section class="card history-card" aria-labelledby="history-heading">
+              <div class="card-topline compact">
+                <div>
+                  <p class="eyebrow">THE LEDGER</p>
+                  <h2 id="history-heading">Round history</h2>
+                </div>
+                <span class="history-count" id="history-count">No draws yet</span>
+              </div>
+              <div id="history-list" class="history-list empty-history">
+                <div class="history-placeholder">Your choices will appear here after the first draw.</div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="side-column">
+            <section class="card lifetime-card" aria-labelledby="lifetime-heading">
+              <div class="lifetime-orbit" aria-hidden="true"></div>
+              <p class="eyebrow">LIFETIME SCORE</p>
+              <div class="lifetime-score" id="lifetime-score">0.00</div>
+              <p class="lifetime-caption" id="lifetime-caption">Your legend begins with the first round.</p>
+              <div class="score-stats">
+                <div><span>Rounds</span><strong id="rounds-played">0</strong></div>
+                <div><span>Best round</span><strong id="best-round">—</strong></div>
+                <div><span>Stones earned</span><strong id="stones-earned">0</strong></div>
+              </div>
+            </section>
+
+            <section class="card wall-preview" aria-labelledby="wall-preview-heading">
+              <div class="card-topline compact">
+                <div>
+                  <p class="eyebrow">THE WALL</p>
+                  <h2 id="wall-preview-heading">Achievements</h2>
+                </div>
+                <span class="achievement-count" id="achievement-count">0 / 24</span>
+              </div>
+              <div id="achievement-preview" class="achievement-preview"></div>
+              <button id="open-achievements" class="secondary-button" type="button">Open full wall <span aria-hidden="true">↗</span></button>
+            </section>
+
+            <section class="card rules-card" aria-labelledby="rules-heading">
+              <details open>
+                <summary id="rules-heading">How Seven Stones works <span aria-hidden="true">⌄</span></summary>
+                <div class="rules-copy">
+                  <p>Choose a color and stake at least one purple stone. The bag draws one physical stone at random, so every stone—not just every color—has an equal chance.</p>
+                  <p>Wrong bids lose the stake. Correct orange and blue bids pay 2×; a correct green bid pays 15×. A round ends at ten turns or when your bank reaches zero.</p>
+                  <p>Your round score uses turns, final purple, green-loss risk, and your longest correct-color streak. Your lifetime score averages every round, then layers on achievement bonuses.</p>
+                </div>
+              </details>
+            </section>
+          </aside>
+        </section>
+
+        <section id="achievement-section" class="achievement-section" aria-labelledby="achievement-wall-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">THE ARCHIVE</p>
+              <h2 id="achievement-wall-heading">Your achievement wall</h2>
+            </div>
+            <p>Unclaimed badges remain in shadow. Every bonus applies the moment its story is earned.</p>
+          </div>
+          <div id="achievement-grid" class="achievement-grid"></div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Seven Stones</span>
+        <span>Runs entirely in your browser · Your progress stays on this device</span>
+      </footer>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <div id="faustian-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="faustian-title" hidden>
+      <div class="modal-card faustian-card">
+        <div class="modal-symbol" aria-hidden="true">♜</div>
+        <p class="eyebrow">A CHANCE WORTH 100</p>
+        <h2 id="faustian-title">Would you rather?</h2>
+        <p id="faustian-copy">This bid could pay at least 100 purple stones. The bag has noticed your ambition.</p>
+        <div class="faustian-options">
+          <button id="faustian-a" class="choice-card choice-a" type="button">
+            <span class="choice-letter">A</span>
+            <span><strong>Guarantee the hit</strong><small>Take the Faustian Bargain. The guarantee has a price: this bid will lose.</small></span>
+          </button>
+          <button id="faustian-b" class="choice-card choice-b" type="button">
+            <span class="choice-letter">B</span>
+            <span><strong>Donate everything</strong><small>Take the Sacred Cow. Your current purple goes to a struggling village; start next round with 14.</small></span>
+          </button>
+        </div>
+        <p class="modal-footnote">There is no third door.</p>
+      </div>
+    </div>
+
+    <div id="round-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="round-modal-title" hidden>
+      <div class="modal-card result-card">
+        <div class="result-kicker" id="result-kicker">ROUND COMPLETE</div>
+        <h2 id="round-modal-title">The bag has spoken.</h2>
+        <div class="result-score" id="result-score">0.00</div>
+        <p class="result-score-label">round score</p>
+        <div id="result-breakdown" class="result-breakdown"></div>
+        <div id="result-achievements" class="result-achievements"></div>
+        <button id="next-round" class="primary-button" type="button">Start next round <span aria-hidden="true">→</span></button>
+        <button id="close-result" class="text-button modal-close" type="button">Close summary</button>
+      </div>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
